@@ -1,0 +1,19 @@
+LIBRARY psapi.dll
+
+EXPORTS
+	GetProcessId=_GetProcessId
+	EnumProcesses
+	EnumProcessModules
+	GetModuleBaseNameA
+	GetModuleBaseNameW
+	GetModuleFileNameExA
+	GetModuleFileNameExW
+	GetProcessImageFileNameA
+	GetProcessImageFileNameW
+	GetProcessMemoryInfo
+	QueryWorkingSet
+	QueryWorkingSetEx
+	InitializeProcessForWsWatch
+	EnumPageFilesA
+	EnumPageFilesW
+	EmptyWorkingSet
