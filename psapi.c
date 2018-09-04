@@ -47,7 +47,10 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		k32 = GetModuleHandle("kernel32.dll");
 		pfGetProcessFlags = (GPF) GetProcAddress(k32, "GetProcessFlags");
 		if (!pfGetProcessFlags)
+		{
+			MessageBoxA(NULL, "GetProcessFlags not found in kernel32.dll", "PSAPI init error", MB_OK | MB_ICONERROR);
 			return FALSE;
+		}
 
 		// there is jmp _SetFilePointer
 		faddr = (DWORD *)((DWORD) GetProcAddress(k32, "SetFilePointer") + 0x1d);
@@ -55,7 +58,16 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		addr = (DWORD) faddr + *faddr + 4 - 0x16;
 		faddr = (DWORD *) addr;
 		if (*faddr != 0x206A006A) // push 0; push 0x20
-			return FALSE;
+		{
+			// try hardcoded Win98SE
+			addr = 0xbff8c660;
+			faddr = (DWORD *) addr;
+			if (*faddr != 0x206A006A)
+			{
+				MessageBoxA(NULL, "Unable to find MapProcessHandle symbol", "PSAPI init error", MB_OK | MB_ICONERROR);
+				return FALSE;
+			}
+		}
 		pfMapProcessHandle = (MPH) addr;
 	}
 	return TRUE;
